@@ -217,7 +217,10 @@ If `prometheus-client` is installed, metrics are registered on import — no set
 | event   | `event_publications_total`  | `event_duration_seconds`   | `event_handler_errors_total` |
 
 Pass an `on_dispatch=callback` to any bus constructor for your own telemetry:
-`(name: str, duration: float, error: Exception | None)`.
+`(name: str, duration: float, error: Exception | None)`. It runs after the
+handler's own outcome is decided, and an exception it raises is logged, not
+propagated: a broken callback can't turn a successful dispatch into a raised
+error or break `EventBus.publish`'s no-raise contract.
 
 ## Errors
 

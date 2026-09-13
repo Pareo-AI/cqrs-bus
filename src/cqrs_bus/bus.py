@@ -78,23 +78,17 @@ class MessageBus(Generic[TMessage]):
         chain = self._build_chain(handler)
         start_time = time.monotonic()
 
+        # Only the handler chain's own outcome may decide success or failure.
+        # on_dispatch runs after that's settled, so a broken callback can't
+        # turn a successful result into a raised exception.
         try:
             result = await chain(message)
-            duration = time.monotonic() - start_time
-
-            self._observe(name, duration)
-            if self._on_dispatch:
-                self._on_dispatch(name, duration, None)
-            self._log_success(name, message_id, duration)
-            return result
-
         except Exception as e:
             duration = time.monotonic() - start_time
             error_type = type(e).__name__
 
             self._inc_error(name, error_type)
-            if self._on_dispatch:
-                self._on_dispatch(name, duration, e)
+            self._safe_on_dispatch(name, duration, e)
             self._logger.error(
                 "[%s] Failed: %s - %s",
                 self._label,
@@ -104,6 +98,20 @@ class MessageBus(Generic[TMessage]):
                 exc_info=True,
             )
             raise
+
+        duration = time.monotonic() - start_time
+        self._observe(name, duration)
+        self._safe_on_dispatch(name, duration, None)
+        self._log_success(name, message_id, duration)
+        return result
+
+    def _safe_on_dispatch(self, name: str, duration: float, error: "Exception | None") -> None:
+        if not self._on_dispatch:
+            return
+        try:
+            self._on_dispatch(name, duration, error)
+        except Exception:
+            self._logger.error("[%s] on_dispatch callback raised", self._label, exc_info=True)
 
     def _build_chain(self, handler: Any) -> Next:
         async def core(message: Any) -> Any:

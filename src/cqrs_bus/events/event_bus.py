@@ -75,8 +75,13 @@ class EventBus:
             _event_duration.labels(event_type=name).observe(duration)
 
         errors = [result for result in results if result is not None]
+        # publish() is documented to never raise; a broken on_dispatch callback
+        # must not break that promise, so its own errors are logged, not propagated.
         if self._on_dispatch:
-            self._on_dispatch(name, duration, errors[0] if errors else None)
+            try:
+                self._on_dispatch(name, duration, errors[0] if errors else None)
+            except Exception:
+                logger.error("[EventBus] on_dispatch callback raised", exc_info=True)
 
         if errors:
             logger.error(

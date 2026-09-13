@@ -129,3 +129,14 @@ class TestOnDispatch:
 
         assert len(calls) == 1
         assert isinstance(calls[0][2], ValueError)
+
+    async def test_raising_on_dispatch_does_not_break_publishs_no_raise_contract(self):
+        class H(EventHandler[Thing]):
+            async def handle(self, event: Thing) -> None: ...
+
+        def broken_on_dispatch(name: str, duration: float, exc: Exception | None) -> None:
+            raise RuntimeError("telemetry broke")
+
+        bus = EventBus(on_dispatch=broken_on_dispatch)
+        bus.subscribe(Thing, H())
+        await bus.publish(Thing())  # must not raise

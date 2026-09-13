@@ -95,6 +95,11 @@ class TestCommandBusDispatch:
         assert name == "SampleCommand"
         assert isinstance(exc, RuntimeError)
 
+    async def test_raising_on_dispatch_does_not_swallow_successful_result(self):
+        bus = CommandBus(on_dispatch=MagicMock(side_effect=RuntimeError("telemetry broke")))
+        bus.register(SampleCommand, SampleHandler())
+        assert await bus.dispatch(SampleCommand(value=3)) == 6
+
     async def test_no_callback_works(self):
         bus = CommandBus()
         bus.register(SampleCommand, SampleHandler())

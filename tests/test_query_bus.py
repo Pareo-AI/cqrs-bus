@@ -94,6 +94,11 @@ class TestQueryBusDispatch:
         assert name == "SampleQuery"
         assert isinstance(exc, ValueError)
 
+    async def test_raising_on_dispatch_does_not_swallow_successful_result(self):
+        bus = QueryBus(on_dispatch=MagicMock(side_effect=RuntimeError("telemetry broke")))
+        bus.register(SampleQuery, SampleHandler())
+        assert await bus.dispatch(SampleQuery(value=2)) == 6
+
     async def test_no_callback_works(self):
         bus = QueryBus()
         bus.register(SampleQuery, SampleHandler())
