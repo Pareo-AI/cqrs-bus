@@ -36,10 +36,10 @@ classifiers = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/john-athan/cqrs-bus"
-Repository = "https://github.com/john-athan/cqrs-bus"
-Documentation = "https://github.com/john-athan/cqrs-bus#readme"
-Issues = "https://github.com/john-athan/cqrs-bus/issues"
+Homepage = "https://github.com/Pareo-AI/cqrs-bus"
+Repository = "https://github.com/Pareo-AI/cqrs-bus"
+Documentation = "https://github.com/Pareo-AI/cqrs-bus#readme"
+Issues = "https://github.com/Pareo-AI/cqrs-bus/issues"
 
 [project.optional-dependencies]
 prometheus = ["prometheus-client>=0.21.0"]
