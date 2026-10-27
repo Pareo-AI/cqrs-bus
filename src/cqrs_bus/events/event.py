@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Generic, TypeVar
+from typing import TypeVar
 
 
 class Event(ABC):
@@ -16,7 +16,7 @@ class Event(ABC):
 TEvent = TypeVar("TEvent", bound=Event)
 
 
-class EventHandler(ABC, Generic[TEvent]):
+class EventHandler[TEvent: Event](ABC):
     @abstractmethod
     async def handle(self, event: TEvent) -> None:
         pass

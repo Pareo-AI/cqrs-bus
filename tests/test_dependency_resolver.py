@@ -1,4 +1,3 @@
-
 import pytest
 
 from cqrs_bus.discovery.dependency_resolver import DependencyResolver

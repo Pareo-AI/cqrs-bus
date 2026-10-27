@@ -23,8 +23,7 @@ class HandlerDiscovery:
     def __init__(self, base_package: str, strict: bool = False):
         if not all(part.isidentifier() for part in base_package.split(".")):
             raise ValueError(
-                f"Invalid base_package '{base_package}': must be a valid Python package path "
-                f"(e.g. 'myapp.handlers')"
+                f"Invalid base_package '{base_package}': must be a valid Python package path (e.g. 'myapp.handlers')"
             )
         self.base_package = base_package
         self.strict = strict

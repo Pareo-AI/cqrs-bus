@@ -10,7 +10,7 @@ key names, whether to emit slow-message warnings, and how to record metrics.
 import logging
 import time
 from collections.abc import Awaitable, Callable
-from typing import Any, Generic, TypeVar
+from typing import Any, TypeVar
 from uuid import uuid4
 
 TMessage = TypeVar("TMessage")
@@ -25,7 +25,7 @@ Next = Callable[[Any], Awaitable[Any]]
 Middleware = Callable[[Any, Next], Awaitable[Any]]
 
 
-class MessageBus(Generic[TMessage]):
+class MessageBus[TMessage]:
     # --- per-bus configuration, overridden by subclasses ---
     _logger: logging.Logger = logging.getLogger(__name__)
     _label: str = "MessageBus"  # log-line prefix, e.g. "[CommandBus]"
@@ -37,8 +37,8 @@ class MessageBus(Generic[TMessage]):
 
     def __init__(
         self,
-        on_dispatch: Callable[[str, float, "Exception | None"], None] | None = None,
-        middleware: "list[Middleware] | None" = None,
+        on_dispatch: Callable[[str, float, Exception | None], None] | None = None,
+        middleware: list[Middleware] | None = None,
     ):
         self._handlers: dict[type, Any] = {}
         self._on_dispatch = on_dispatch
@@ -105,7 +105,7 @@ class MessageBus(Generic[TMessage]):
         self._log_success(name, message_id, duration)
         return result
 
-    def _safe_on_dispatch(self, name: str, duration: float, error: "Exception | None") -> None:
+    def _safe_on_dispatch(self, name: str, duration: float, error: Exception | None) -> None:
         if not self._on_dispatch:
             return
         try:

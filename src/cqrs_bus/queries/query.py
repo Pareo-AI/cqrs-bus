@@ -1,10 +1,10 @@
 from abc import ABC, abstractmethod
-from typing import Generic, TypeVar
+from typing import TypeVar
 
 TResult = TypeVar("TResult")
 
 
-class Query(ABC, Generic[TResult]):
+class Query[TResult](ABC):
     """Marker base class for queries (read-only requests).
 
     Carries no fields of its own — subclass it and add data with ``@dataclass``,
@@ -19,7 +19,7 @@ class Query(ABC, Generic[TResult]):
 TQuery = TypeVar("TQuery", bound=Query)
 
 
-class QueryHandler(ABC, Generic[TQuery, TResult]):
+class QueryHandler[TQuery: Query, TResult](ABC):
     @abstractmethod
     async def handle(self, query: TQuery) -> TResult:
         pass

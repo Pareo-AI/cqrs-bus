@@ -117,9 +117,7 @@ class TestIsValidHandler:
             # does not implement handle()
             pass
 
-        assert not self.discovery._is_valid_handler(
-            IncompleteHandler, CommandHandler, IncompleteHandler.__module__
-        )
+        assert not self.discovery._is_valid_handler(IncompleteHandler, CommandHandler, IncompleteHandler.__module__)
 
     def test_rejects_non_handler_class(self):
         class NotAHandler:

@@ -42,15 +42,15 @@ class QueryBus(MessageBus[Query]):
 
     def __init__(
         self,
-        on_dispatch: Callable[[str, float, "Exception | None"], None] | None = None,
-        middleware: "list[Middleware] | None" = None,
+        on_dispatch: Callable[[str, float, Exception | None], None] | None = None,
+        middleware: list[Middleware] | None = None,
     ):
         super().__init__(on_dispatch=on_dispatch, middleware=middleware)
 
     def register(self, query_type: type[TQuery], handler: QueryHandler[TQuery, Any]) -> None:
         super().register(query_type, handler)
 
-    async def dispatch(self, query: "Query[TResult]") -> TResult:
+    async def dispatch(self, query: Query[TResult]) -> TResult:
         return await super().dispatch(query)
 
     def _inc_total(self, name: str) -> None:

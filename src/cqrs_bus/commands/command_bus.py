@@ -43,15 +43,15 @@ class CommandBus(MessageBus[Command]):
 
     def __init__(
         self,
-        on_dispatch: Callable[[str, float, "Exception | None"], None] | None = None,
-        middleware: "list[Middleware] | None" = None,
+        on_dispatch: Callable[[str, float, Exception | None], None] | None = None,
+        middleware: list[Middleware] | None = None,
     ):
         super().__init__(on_dispatch=on_dispatch, middleware=middleware)
 
     def register(self, command_type: type[TCommand], handler: CommandHandler[TCommand, Any]) -> None:
         super().register(command_type, handler)
 
-    async def dispatch(self, command: "Command[TResult]") -> TResult:
+    async def dispatch(self, command: Command[TResult]) -> TResult:
         return await super().dispatch(command)
 
     def _inc_total(self, name: str) -> None:

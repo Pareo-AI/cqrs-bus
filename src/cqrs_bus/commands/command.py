@@ -1,10 +1,10 @@
 from abc import ABC, abstractmethod
-from typing import Generic, TypeVar
+from typing import TypeVar
 
 TResult = TypeVar("TResult")
 
 
-class Command(ABC, Generic[TResult]):
+class Command[TResult](ABC):
     """Marker base class for commands (state-changing intents).
 
     Carries no fields of its own — subclass it and add data with ``@dataclass``,
@@ -19,7 +19,7 @@ class Command(ABC, Generic[TResult]):
 TCommand = TypeVar("TCommand", bound=Command)
 
 
-class CommandHandler(ABC, Generic[TCommand, TResult]):
+class CommandHandler[TCommand: Command, TResult](ABC):
     @abstractmethod
     async def handle(self, command: TCommand) -> TResult:
         pass

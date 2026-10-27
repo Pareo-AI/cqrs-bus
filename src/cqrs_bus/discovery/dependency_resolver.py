@@ -12,9 +12,7 @@ class DependencyResolver:
         try:
             sig = inspect.signature(handler_class.__init__)  # type: ignore[misc]
         except (ValueError, TypeError) as e:
-            raise MissingDependencyError(
-                f"Failed to inspect {handler_class.__name__}.__init__: {e}"
-            ) from e
+            raise MissingDependencyError(f"Failed to inspect {handler_class.__name__}.__init__: {e}") from e
 
         dependencies: dict[str, type] = {}
 
@@ -39,9 +37,7 @@ class DependencyResolver:
         try:
             sig = inspect.signature(handler_class.__init__)  # type: ignore[misc]
         except (ValueError, TypeError) as e:
-            raise MissingDependencyError(
-                f"Failed to inspect {handler_class.__name__}.__init__: {e}"
-            ) from e
+            raise MissingDependencyError(f"Failed to inspect {handler_class.__name__}.__init__: {e}") from e
 
         resolved = {}
 

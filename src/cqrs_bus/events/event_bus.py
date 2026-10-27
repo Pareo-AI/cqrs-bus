@@ -41,7 +41,7 @@ class EventBus:
     publisher is decoupled from whoever happens to be listening.
     """
 
-    def __init__(self, on_dispatch: Callable[[str, float, "Exception | None"], None] | None = None):
+    def __init__(self, on_dispatch: Callable[[str, float, Exception | None], None] | None = None):
         self._handlers: dict[type, list[EventHandler]] = defaultdict(list)
         self._on_dispatch = on_dispatch
 
@@ -100,7 +100,7 @@ class EventBus:
         event: Event,
         name: str,
         event_id: str,
-    ) -> "Exception | None":
+    ) -> Exception | None:
         # Isolation: catch here so one subscriber's failure can't cancel the
         # asyncio.gather and take down its siblings. Return the error for the
         # caller to summarize.
